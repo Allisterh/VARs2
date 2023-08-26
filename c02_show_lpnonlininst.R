@@ -1,33 +1,29 @@
-# c02_show_lpnonlinst.R ----
-
-## Settings ----
-p <- 6  # easily overfitted
+## Settings
+p <- 6 # easily overfitted
 h <- 48
 c_case <- 1
-vars   <- c('GDPgap', 'Unemp', 'CoreCPIGr12', 'FFR')
+vars <- c("GDPgap", "Unemp", "CoreCPIGr12", "FFR")
 exvars <- NULL
-n      <- length(vars)
-ident  <- 'proxy'
-proxyvar  <- c('mpsprGK4')
-shockpos  <- 4 # position of the shock in the Cholesky ordering
+n <- length(vars)
+ident <- "proxy"
+proxyvar <- c("mpsprGK4")
+shockpos <- 4 # position of the shock in the Cholesky ordering
 shocksize <- 0 # 0 = one standard deviation, all else: absolute values
-state <- list(nonlinear = 'yes',
-              logistic  = 'yes',
-              interacted = 'no',
-              statevar = 'Unemp',
-              gamma = -5, # because gamma enters negatively, a double negative indicates positive values = regime 2
-              cq = 60)
+state <- list(
+  nonlinear = "yes",
+  logistic = "yes",
+  interacted = "no",
+  statevar = "Unemp",
+  gamma = -5, # because gamma enters negatively, a double negative indicates positive values = regime 2
+  cq = 60
+)
 alpha <- 90 # confidence level
 
-## Load data, generate lags, subset relevant subsample, etc. ----
-load(file = 'data/data_m_ready.RData')
-source('_tbx/supportfct/subset_data.R', echo = TRUE)
+## Load data, generate lags, subset relevant subsample, etc.
+load(file = "data/data_m_ready.RData")
+source("_tbx/supportfct/subset_data.R", echo = T)
+## Estimate matrices A, Omega, S, dynamic multipliers
+LP <- estimateLPznonlin(data, z, state$Fs, h, p, c_case, exdata, alpha, NWSE = F)
 
-## Estimate matrices A, Omega, S, dynamic multipliers ----
-LP <- estimateLPznonlin(data, z, state$Fs, h, p, c_case, exdata, alpha, NWSE = FALSE)
-
-## Plot impulse responses ----
-plotirf2(LP$gamma1, LP$gamma1bands, LP$gamma2, LP$gamma2bands, printvars, c('Expansion','Recession'))
-
-
-# END
+## Plot impulse responses
+plotirf2(LP$gamma1, LP$gamma1bands, LP$gamma2, LP$gamma2bands, printvars, c("Expansion", "Recession"))
