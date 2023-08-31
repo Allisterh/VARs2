@@ -1,3 +1,6 @@
+# ************************************************************************
+# Bootstrap VAR ----
+# ************************************************************************
 bootstrapVAR <- function(VAR, nboot, alpha = 90, method) {
   # unpacking
   t <- nrow(VAR$u)
@@ -125,3 +128,5 @@ bootstrapVAR <- function(VAR, nboot, alpha = 90, method) {
 
   return(IRFbands)
 }
+
+# END

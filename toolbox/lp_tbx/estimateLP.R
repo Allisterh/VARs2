@@ -1,4 +1,7 @@
-estimateLP <- function(data, h, p, c_case, exdata, alpha = 90, NWSE = T) {
+# ************************************************************************
+# Estimate LP ----
+# ************************************************************************
+estimateLP <- function(data, h, p, c_case, exdata, alpha = 90, NWSE = TRUE) {
   # Prep parameters/containers
   t <- nrow(data)
   n <- ncol(data)
@@ -87,3 +90,5 @@ estimateLP <- function(data, h, p, c_case, exdata, alpha = 90, NWSE = T) {
     "h" = h
   ))
 }
+
+# END

@@ -1,4 +1,7 @@
-estimateLPz <- function(data, z, h, p, c_case, exdata, alpha = 90, NWSE = T) {
+# ************************************************************************
+# Estimate LP with instrument variable z ----
+# ************************************************************************
+estimateLPz <- function(data, z, h, p, c_case, exdata, alpha = 90, NWSE = TRUE) {
   # Prep parameters/containers
   t <- nrow(data)
   n <- ncol(data)
@@ -85,3 +88,5 @@ estimateLPz <- function(data, z, h, p, c_case, exdata, alpha = 90, NWSE = T) {
     "h" = h
   ))
 }
+
+# END

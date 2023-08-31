@@ -1,4 +1,8 @@
-## Settings
+# ************************************************************************
+# VAR Sign
+# ************************************************************************
+
+## Settings ----
 p <- 12
 h <- 48
 c_case <- 1
@@ -12,14 +16,14 @@ state <- list(nonlinear = "no")
 nboot <- 1000
 alpha <- 90 # confidence level
 
-## Load data, generate lags, subset relevant subsample, etc.
+## Load data, generate lags, subset relevant subsample, etc. ----
 load(file = "data/data_m_ready.RData")
-source("_tbx/supportfct/subset_data.R", echo = T)
+source("toolbox/supportfct/subset_data.R", echo = TRUE)
 ## Estimate matrices A, Omega, S, dynamic multipliers
 VAR <- estimateVAR(data, p, c_case, exdata)
 VAR$C <- dyn_multipliers(VAR, h) # not identified
 
-## Identification: Sign restrictions
+## Identification: Sign restrictions ----
 VAR$ident <- ident
 # define restrictions // each column is one of q identified shocks
 # and each of n rows contains -1 and 1 for negative/positive restrictions
@@ -29,18 +33,19 @@ Rest <- matrix(c(
   c(1, NA, 1, 1), # demand shock
   c(-1, NA, 1, 1), # supply shock
   c(NA, NA, NA, NA)
-), nrow = n, byrow = F)
+), nrow = n, byrow = FALSE)
 print(Rest)
 if (ncol(Rest) != n) {
   print("Error. Number of rows in Rest matrix has to be equal to n.")
 }
+
 Rest <- Rest[, colSums(!is.na(Rest)) > 0] # select only columns that actually contain identifying restrictions
 Start <- matrix(c(
   c(5, NA, 5, 0),
   c(5, NA, 5, 0),
   c(5, NA, 5, 0),
   c(NA, NA, NA, NA)
-), nrow = n, byrow = F) # first period for binding restriction
+), nrow = n, byrow = FALSE) # first period for binding restriction
 Start <- Start[1:nrow(Rest), 1:ncol(Rest)]
 End <- 5 * matrix(1, nrow = nrow(Rest), ncol = ncol(Rest)) # final period for binding restriction
 End <- End[1:nrow(Rest), 1:ncol(Rest)]
@@ -49,11 +54,12 @@ Rest_check <- rep(0, nshocks)
 perc_accepted <- rep(NA, nboot)
 Qb <- array(NA, dim = c(n, n, nboot))
 
-# while-loop to look for nboot different Q's that satisfy the restrictions
+# while-loop to look for nboot different Q's that satisfy the restrictions ---
 accepteddraws <- 0
 attempts <- 1
 print("Progress...")
 pb <- txtProgressBar(min = 0, max = nboot, initial = 0, style = 3)
+
 while (accepteddraws < nboot) {
   # draw a rotation of Q
   draw <- matrix(rnorm(n^2), ncol = n)
@@ -131,7 +137,7 @@ while (accepteddraws < nboot) {
   attempts <- attempts + 1
 }
 
-# figure: share of accepted draws (in %)
+## Figure: share of accepted draws (in %) ----
 plot(1:nboot, perc_accepted, "l", lwd = 2, main = "Percent of draws accepted", xlab = "Draw", ylab = "")
 grid()
 rm(
@@ -140,7 +146,7 @@ rm(
   perc_accepted, nn, IRFcandidate
 )
 
-# Produce IRFs with accepted Q's for each shock/column in 'Rest'
+## Produce IRFs with accepted Q's for each shock/column in 'Rest' ----
 for (s in 1:nshocks) {
   ## Impulse response functions
   # Constructions
@@ -175,5 +181,7 @@ for (s in 1:nshocks) {
   plotirf1(IRF, IRFbands, printvars)
 }
 
-# Organize
+## Organize ----
 rm(s, bb, hh, Rest, Start, End, shock, shockpos, Qb, IRFb, lo, up, P, IRF, Q, pb, QR, IRFbands, nshocks)
+
+# END

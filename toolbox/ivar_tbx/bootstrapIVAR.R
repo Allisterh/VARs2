@@ -1,3 +1,6 @@
+# ************************************************************************
+# Bootstrap IVAR ----
+# ************************************************************************
 bootstrapIVAR <- function(IVAR, state, nboot, alpha = 90, method = "residual", fast = TRUE) {
   # unpacking
   data <- IVAR$data
@@ -171,7 +174,7 @@ bootstrapIVAR <- function(IVAR, state, nboot, alpha = 90, method = "residual", f
 
     acceptdraw <- 1
     test <<- datab
-    if ((sum(is.na(datab)) + sum(datab %in% Inf, na.rm = T) + sum(datab %in% -Inf, na.rm = T)) > 0) {
+    if ((sum(is.na(datab)) + sum(datab %in% Inf, na.rm = TRUE) + sum(datab %in% -Inf, na.rm = TRUE)) > 0) {
       acceptdraw <- 0
     } else if (max(abs(datab - colMeans(datab))) > 10^5) {
       acceptdraw <- 0
@@ -262,9 +265,11 @@ bootstrapIVAR <- function(IVAR, state, nboot, alpha = 90, method = "residual", f
   GIRFbands$GIRF1$GIRFbands <- array(NA, dim = c(h, n, 2))
   GIRFbands$GIRF2$GIRFbands <- array(NA, dim = c(h, n, 2))
   for (i in 1:n) {
-    GIRFbands$GIRF1$GIRFbands[, i, ] <- t(apply(GIRF1b[, i, ], 1, FUN = function(x) quantile(x, probs = c(lo / 100, up / 100), na.rm = T)))
-    GIRFbands$GIRF2$GIRFbands[, i, ] <- t(apply(GIRF2b[, i, ], 1, FUN = function(x) quantile(x, probs = c(lo / 100, up / 100), na.rm = T)))
+    GIRFbands$GIRF1$GIRFbands[, i, ] <- t(apply(GIRF1b[, i, ], 1, FUN = function(x) quantile(x, probs = c(lo / 100, up / 100), na.rm = TRUE)))
+    GIRFbands$GIRF2$GIRFbands[, i, ] <- t(apply(GIRF2b[, i, ], 1, FUN = function(x) quantile(x, probs = c(lo / 100, up / 100), na.rm = TRUE)))
   }
 
   return(GIRFbands)
 }
+
+# END

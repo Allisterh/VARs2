@@ -1,4 +1,7 @@
-estimateLPznonlin <- function(data, z, Fs, h, p, c_case, exdata, alpha = 90, NWSE = T) {
+# ************************************************************************
+# Estimate nonlinear LP with instrument variable z ---
+# ************************************************************************
+estimateLPznonlin <- function(data, z, Fs, h, p, c_case, exdata, alpha = 90, NWSE = TRUE) {
   # Prep parameters/containers
   t <- nrow(data)
   n <- ncol(data)
@@ -96,3 +99,5 @@ estimateLPznonlin <- function(data, z, Fs, h, p, c_case, exdata, alpha = 90, NWS
     "h" = h
   ))
 }
+
+# END

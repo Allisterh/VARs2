@@ -1,11 +1,15 @@
-## Import
+# ************************************************************************
+# Prepare monthly data ----
+# ************************************************************************
+
+## Import ----
 xlsdata <- read.xls("data/data_q_in.xlsx")
 data <- xlsdata[, 3:ncol(xlsdata)]
 labels <- colnames(data)
 
-## Timing and labelling
+## Timing and labeling ----
 time <- xlsdata[, 1] + (1 / 4) * (xlsdata[, 2] - 1)
-labelmat <- read.xls("data/data_q_in.xlsx", sheet = 2, header = F)
+labelmat <- read.xls("data/data_q_in.xlsx", sheet = 2, header = FALSE)
 labels_print <- labels
 for (vv in 1:length(labels_print)) {
   col <- which(labelmat[, 1] %in% labels[vv])
@@ -15,7 +19,7 @@ for (vv in 1:length(labels_print)) {
 }
 rm(xlsdata, labelmat, vv, col)
 
-## Data treatment
+## Data treatment ----
 # 100*log of variables in levels (replace series)
 var <- c(
   "GDP", "PotGP", "CPI", "CoreCPI", "NCONS", "GDPDEF", "LF", "CONS",
@@ -28,7 +32,7 @@ for (vv in 1:length(var)) {
   }
 }
 
-# y/y growth rates (generate new series)
+## y/y growth rates (generate new series) ----
 var <- c("GDP", "CPI", "CoreCPI", "MortgGDP")
 for (vv in 1:length(var)) {
   col <- which(labels %in% var[vv])
@@ -43,7 +47,7 @@ for (vv in 1:length(var)) {
 labels_print[which(labels %in% "CPIGr4")] <- "Inflation"
 labels_print[which(labels %in% "CoreCPIGr4")] <- "Inflation"
 
-# first difference
+## first difference ----
 var <- c("GDP", "CPI", "CoreCPI", "FFR", "FFRshadow", "GDPDEF", "GDPPC", "CONS", "INV", "WAGE")
 for (vv in 1:length(var)) {
   col <- which(labels %in% var[vv])
@@ -61,7 +65,7 @@ labels_print[which(labels %in% "dCPI")] <- "Inflation"
 labels_print[which(labels %in% "dCoreCPI")] <- "Inflation"
 labels_print[which(labels %in% "dGDPDEF")] <- "Inflation"
 
-# hp filtering
+## hp filtering ----
 var <- c("GDP")
 for (vv in 1:length(var)) {
   col <- which(labels %in% var[vv])
@@ -77,7 +81,7 @@ for (vv in 1:length(var)) {
 }
 rm(hp, notna)
 
-# interest rate in deviation from natural rate
+## interest rate in deviation from natural rate ----
 var <- c("FFR", "FFRshadow")
 for (vv in 1:length(var)) {
   col <- which(labels %in% var[vv])
@@ -92,19 +96,20 @@ for (vv in 1:length(var)) {
 }
 rm(col2)
 
-# Plot descriptive time series
+## Plot descriptive time series ----
 xt00 <- which(time == 2000)
 xt <- c(sort(seq(xt00, 0, -20)), seq(xt00 + 20, length(time), 20))
 
-# plot all time series
+## plot all time series ----
 for (vv in 1:ncol(data)) {
   plot(time, data[, vv], "l", lwd = 2, xlab = "", ylab = labels_print[vv])
   grid()
 }
 
-# Export, housekeeping
+## Export, housekeeping ----
 data_lib <- data
 labels_lib <- labels
 printlabels_lib <- labels_print
 rm(col, vv, var, data, labels, labels_print, xt, xt00)
 save(file = "data/data_q_ready.RData", list = c("data_lib", "labels_lib", "printlabels_lib", "time"))
+# END

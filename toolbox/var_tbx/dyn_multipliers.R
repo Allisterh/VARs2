@@ -1,3 +1,6 @@
+# ************************************************************************
+# Dynamic multipliers ----
+# ************************************************************************
 dyn_multipliers <- function(VAR, h) {
   c_case <- VAR$c_case
   p <- VAR$p
@@ -26,3 +29,5 @@ dyn_multipliers <- function(VAR, h) {
   # reindicize
   return(C[, , (p + 1):(dim(C)[3])])
 }
+
+# END

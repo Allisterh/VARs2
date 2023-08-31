@@ -1,9 +1,13 @@
-## Import
+# ************************************************************************
+# Prepare monthly data ----
+# ************************************************************************
+
+## Import ----
 xlsdata <- read.xls("data/data_m_in.xlsx")
 data <- xlsdata[, 3:ncol(xlsdata)]
 labels <- colnames(data)
 
-## Timing and labelling
+## Timing and labeling ----
 time <- xlsdata[, 1] + (1 / 12) * (xlsdata[, 2] - 1)
 labelmat <- read.xls("data/data_m_in.xlsx", sheet = 2, header = F)
 labels_print <- labels
@@ -15,7 +19,7 @@ for (vv in 1:length(labels_print)) {
 }
 rm(xlsdata, labelmat, vv, col)
 
-## Data treatment
+## Data treatment ----
 # 100*log of variables in levels (replace series)
 var <- c("IP", "CPI", "CoreCPI", "GDPIHS", "PotGDP", "PPI")
 for (vv in 1:length(var)) {
@@ -85,9 +89,9 @@ quarter <- year + (quarter / 4 - 0.25)
 qvalues <- unique(quarter[year < 1992]) # only need period prior to 1992
 chicagoq <- rep(NA, length(qvalues))
 for (qq in 1:length(qvalues)) {
-  chicagoq[qq] <- sum(chicagom[quarter == qvalues[qq]], na.rm = T)
+  chicagoq[qq] <- sum(chicagom[quarter == qvalues[qq]], na.rm = TRUE)
 }
-dataq <- read.xls("data/data_m_in.xlsx", sheet = 4, header = T)
+dataq <- read.xls("data/data_m_in.xlsx", sheet = 4, header = TRUE)
 GDPgrowth <- dataq$GDPgrowth[1:length(chicagoq)]
 plot(1:length(chicagoq), chicagoq, "l")
 lines(1:length(chicagoq), GDPgrowth, "l", col = "blue")
@@ -111,11 +115,11 @@ while (nrow(dataq3) < nrow(data)) {
   dataq3 <- rbind(dataq3, NA)
 }
 
-# Plot descriptive time series
+## Plot descriptive time series ----
 xt00 <- which(time == 2000)
 xt <- c(sort(seq(xt00, 0, -60)), seq(xt00 + 60, length(time), 60))
 
-# output gap measures
+## Output gap measures ----
 plot(time, data$GDPgap, "l", lwd = 1.5, ylab = "Output gap", xlab = "", ylim = c(-12.5, 5))
 grid()
 lines(time, dataq3$GDPgap, col = "blue", lwd = 2)
@@ -130,10 +134,10 @@ legend("bottomleft",
 )
 rm(dataq, dataq3, hp)
 
-# 'state' graph
+## 'state' graph ----
 s <- data$GDPgap
-s2 <- (s - mean(s, na.rm = T)) / sd(s, na.rm = T)
-s3 <- (s - quantile(s, 0.05, na.rm = T)) / sd(s, na.rm = T)
+s2 <- (s - mean(s, na.rm = TRUE)) / sd(s, na.rm = TRUE)
+s3 <- (s - quantile(s, 0.05, na.rm = TRUE)) / sd(s, na.rm = TRUE)
 Fs <- exp(-1.5 * s2) / (1 + exp(-1.5 * s2))
 plot(time, Fs, "l", lwd = 2, ylim = c(0, 1.3), xlab = "")
 grid()
@@ -147,15 +151,16 @@ legend("topleft",
 )
 rm(s, s2, s3, Fs)
 
-# plot all time series
+## Plot all time series ----
 for (vv in 1:ncol(data)) {
   plot(time, data[, vv], "l", lwd = 2, xlab = "", ylab = labels_print[vv])
   grid()
 }
 
-# Export, housekeeping
+## Export, housekeeping ----
 data_lib <- data
 labels_lib <- labels
 printlabels_lib <- labels_print
 rm(col, vv, var, data, labels, labels_print, xt, xt00)
 save(file = "data/data_m_ready.RData", list = c("data_lib", "labels_lib", "printlabels_lib", "time"))
+# END

@@ -1,3 +1,6 @@
+# ************************************************************************
+# Plot IRF 2 ----
+# ************************************************************************
 plotirf2 <- function(irf1, irfbands1, irf2, irfbands2, printvars, printstate, poslegend = "topright") {
   H <- nrow(irf1) - 1
   n <- ncol(irf1)
@@ -36,3 +39,5 @@ plotirf2 <- function(irf1, irfbands1, irf2, irfbands2, printvars, printstate, po
   }
   par(mfrow = c(1, 1), mar = c(4.6, 4.1, 2.1, 2.1))
 }
+
+# END

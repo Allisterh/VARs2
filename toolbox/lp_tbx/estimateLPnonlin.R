@@ -1,4 +1,7 @@
-estimateLPnonlin <- function(data, Fs, h, p, c_case, exdata, alpha = 90, NWSE = T) {
+# ************************************************************************
+# Estimate nonlinear LP ----
+# ************************************************************************
+estimateLPnonlin <- function(data, Fs, h, p, c_case, exdata, alpha = 90, NWSE = TRUE) {
   # Prep parameters/containers
   t <- nrow(data)
   n <- ncol(data)
@@ -100,3 +103,5 @@ estimateLPnonlin <- function(data, Fs, h, p, c_case, exdata, alpha = 90, NWSE = 
     "h" = h
   ))
 }
+
+# END

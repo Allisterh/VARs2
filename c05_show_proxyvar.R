@@ -1,4 +1,8 @@
-## Settings
+# ************************************************************************
+# Show Proxy VAR ----
+# ************************************************************************
+
+## Settings ----
 p <- 12
 h <- 48
 c_case <- 1
@@ -13,14 +17,15 @@ state <- list(nonlinear = "no")
 nboot <- 1000
 alpha <- 90 # confidence level
 
-## Load data, generate lags, subset relevant subsample, etc.
+## Load data, generate lags, subset relevant subsample, etc. ----
 load(file = "data/data_m_ready.RData")
-source("_tbx/supportfct/subset_data.R", echo = T)
-## Estimate matrices A, Omega, S, dynamic multipliers
+source("toolbox/supportfct/subset_data.R", echo = TRUE)
+
+## Estimate matrices A, Omega, S, dynamic multipliers ----
 VAR <- estimateVAR(data, p, c_case, exdata)
 VAR$C <- dyn_multipliers(VAR, h) # not identified
 
-## Identification: Instrumental variable (z)
+## Identification: Instrumental variable (z) ----
 # prepare
 VAR$ident <- ident
 VAR$shock <- matrix(0, n, 1)
@@ -53,10 +58,10 @@ for (hh in 1:h) {
   VAR$IRF[hh, ] <- t(VAR$C[, , hh] %*% t(s))
 }
 
-## Bootstrap
+## Bootstrap ----
 VAR$IRFbands <- bootstrapVAR(VAR, nboot, alpha, "wild")
 
-## Scaling and cleaning up
+### Scaling and cleaning up ----
 # so far, s gives us the vector of relative responses. We want absolute values for a 1sd
 # shock. To get that, follow Piffer (2020):
 if (shocksize == 0) {
@@ -80,5 +85,7 @@ VAR$s <- c(b11) * VAR$s
 VAR$Fstat <- Fstat
 rm(b, xi, u_p, u_q, nona, beta1, u_p_hat, Fstat, s, b11)
 
-## Plot impulse responses
+## Plot impulse responses ----
 plotirf1(VAR$IRF, VAR$IRFbands, printvars)
+
+# END

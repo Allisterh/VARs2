@@ -1,4 +1,7 @@
-testIRFsign <- function(irf_vec, sign_to_check, rev_cond = F) {
+# ************************************************************************
+# Test IRF sign ----
+# ************************************************************************
+testIRFsign <- function(irf_vec, sign_to_check, rev_cond = FALSE) {
   # this functions checks whether the sign restriction on the kk variable is
   # verified
   # INPUT:
@@ -34,3 +37,5 @@ testIRFsign <- function(irf_vec, sign_to_check, rev_cond = F) {
   }
   return(a)
 }
+
+# END

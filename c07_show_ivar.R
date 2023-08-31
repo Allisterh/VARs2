@@ -1,4 +1,8 @@
-## Settings
+# ************************************************************************
+# Show IVAR ----
+# ************************************************************************
+
+## Settings ----
 p <- 4
 h <- 25
 c_case <- 1
@@ -19,20 +23,26 @@ state <- list(
 nboot <- 1000
 alpha <- 90 # confidence level
 
-## Load data, generate lags, subset relevant subsample, etc.
+## Load data, generate lags, subset relevant subsample, etc. ----
 load("data/data_q_ready.RData") # quarterly!
-source("_tbx/supportfct/subset_data.R", echo = T)
-## Estimate a linear VAR with interaction term in exdata
+source("toolbox/supportfct/subset_data.R", echo = TRUE)
+
+## Estimate a linear VAR with interaction term in exdata ----
 IVAR <- estimateVAR(data, p, c_case, exdata)
-## Split sample into histories of two groups and simulate generalized impulse responses
+
+## Split sample into histories of two groups and simulate generalized impulse responses ----
 IVAR$GIRF1 <- simGIRF(IVAR, state, h, !state$s[(p + 1):length(state$s)], shocksize, TRUE, TRUE)
 # do h + a number to make sure GIRFs are stable
 IVAR$GIRF2 <- simGIRF(IVAR, state, h, state$s[(p + 1):length(state$s)], shocksize, TRUE, TRUE)
-## Bootstrap
+
+## Bootstrap ----
 IVAR$GIRFbands <- bootstrapIVAR(IVAR, state, nboot, alpha, "residual", TRUE)
-## Figure
+
+## Figure ----
 plotirf2(
   IVAR$GIRF1$GIRF[1:h, ], IVAR$GIRFbands$GIRF1$GIRFbands[1:h, , ],
   IVAR$GIRF2$GIRF[1:h, ], IVAR$GIRFbands$GIRF2$GIRFbands[1:h, , ],
   printvars, c("Boom", "Recession")
 )
+
+# END

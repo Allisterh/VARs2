@@ -1,4 +1,8 @@
-## Settings
+# ************************************************************************
+# Show LP Lin Inst ----
+# ************************************************************************
+
+## Settings ----
 p <- 6 # easily overfitted
 h <- 48
 c_case <- 1
@@ -12,11 +16,14 @@ shocksize <- 0 # 0 = one standard deviation, all else: absolute values
 state <- list(nonlinear = "no")
 alpha <- 90 # confidence level
 
-## Load data, generate lags, subset relevant subsample, etc.
+## Load data, generate lags, subset relevant subsample, etc. ----
 load(file = "data/data_m_ready.RData")
-source("_tbx/supportfct/subset_data.R", echo = T)
-## Estimate matrices A, Omega, S, dynamic multipliers
-LP <- estimateLPz(data, z, h, p, c_case, exdata, alpha, NWSE = F)
+source("toolbox/supportfct/subset_data.R", echo = TRUE)
 
-## Plot impulse responses
+## Estimate matrices A, Omega, S, dynamic multipliers ----
+LP <- estimateLPz(data, z, h, p, c_case, exdata, alpha, NWSE = FALSE)
+
+## Plot impulse responses ----
 plotirf1(LP$gamma, LP$gammabands, printvars)
+
+# END

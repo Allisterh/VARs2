@@ -1,4 +1,8 @@
-## Settings
+# ************************************************************************
+# LP Nonlin ----
+# ************************************************************************
+
+## Settings ----
 p <- 12
 h <- 48
 c_case <- 1
@@ -18,10 +22,11 @@ state <- list(
 )
 alpha <- 90 # confidence level
 
-## Load data, generate lags, subset relevant subsample, etc.
+## Load data, generate lags, subset relevant subsample, etc. ----
 load(file = "data/data_m_ready.RData")
-source("_tbx/supportfct/subset_data.R", echo = T)
-## Overwrite indicator function with interest level change of past 12 months
+source("toolbox/supportfct/subset_data.R", echo = TRUE)
+
+## Overwrite indicator function with interest level change of past 12 months  ----
 scum <- state$s
 for (pp in 1:11) {
   scum <- scum + c(rep(NA, pp), state$s[1:(length(state$s) - pp)])
@@ -30,10 +35,10 @@ state$s <- matrix(scum[12:length(scum)], ncol = 1) # shorten by first 11 periods
 state$Fs <- matrix(as.numeric(state$s > 0), ncol = 1)
 data <- data[12:nrow(data), ]
 
-## Estimate matrices A, Omega, S, dynamic multipliers
-LP <- estimateLPnonlin(data, state$Fs, h, p, c_case, exdata, alpha, NWSE = T)
+## Estimate matrices A, Omega, S, dynamic multipliers ----
+LP <- estimateLPnonlin(data, state$Fs, h, p, c_case, exdata, alpha, NWSE = TRUE)
 
-## Identification: Estimate VAR to get S
+## Identification: Estimate VAR to get S ----
 VAR <- estimateVAR(data, p, c_case, exdata)
 LP$ident <- ident
 LP$shock <- matrix(0, n, 1)
@@ -56,5 +61,7 @@ for (hh in 1:h) {
   LP$IRF2bands[hh, , 2] <- t(LP$Gamma2up[, , hh] %*% VAR$S %*% LP$shock2)
 }
 
-## Plot impulse responses
+## Plot impulse responses ----
 plotirf2(LP$IRF1, LP$IRF1bands, LP$IRF2, LP$IRF2bands, printvars, c("Easing cycle", "Tightening cycle"))
+
+# END

@@ -1,23 +1,27 @@
-# select T x N matrix of endogenous variables
+# ************************************************************************
+# Subset data ----
+# ************************************************************************
+
+## select T x N matrix of endogenous variables ----
 data <- data_lib[, vars]
 printvars <- NULL
 for (i in 1:n) {
   printvars <- c(printvars, printlabels_lib[which(labels_lib %in% vars[i])])
 }
 
-# select T x N matrix of exogenous variables
+## select T x N matrix of exogenous variables ----
 exdata <- data_lib[, exvars]
 if (ncol(exdata) == 0) {
   exdata <- NULL
 }
 
-# select instrument (if necessary)
+## select instrument (if necessary) ----
 z <- NULL
 if (ident == "proxy") {
   z <- as.matrix(data_lib[, proxyvar], nrow = nrow(data_lib))
 }
 
-# select state (if necessary)
+## select state (if necessary) ----
 s <- NULL
 if (state$nonlinear == "yes") {
   if (state$logistic == "yes") {
@@ -25,7 +29,7 @@ if (state$nonlinear == "yes") {
   }
 }
 
-# select interaction (if necessary)
+## select interaction (if necessary) ----
 if (state$nonlinear == "yes") {
   if (state$interacted == "yes") {
     if (sum(labels_lib %in% c(state$shockvar, state$statevar)) < 2) {
@@ -38,7 +42,7 @@ if (state$nonlinear == "yes") {
   }
 }
 
-# ignore non-NA columns
+## ignore non-NA columns ----
 nona <- rowSums(is.na(data)) == 0
 if (!is.null(exdata)) {
   nona[rowSums(is.na(exdata)) > 0] <- FALSE
@@ -58,7 +62,7 @@ if (!is.null(z)) {
   z <- as.matrix(z[nona, ], nrow = sum(nona))
 }
 
-# ignore data before 1965
+## ignore data before 1965 ----
 data <- data[time >= 1965, ]
 if (!is.null(exdata)) {
   exdata <- as.matrix(exdata[time >= 1965, ], nrow = nrow(data))
@@ -84,7 +88,7 @@ if (!is.null(z)) {
 }
 time <- time[time < 2020]
 
-# Logistic transformation of s-variable
+## Logistic transformation of s-variable ----
 if (state$nonlinear == "yes") {
   if (state$logistic == "yes") {
     state$s_orig <- s
@@ -95,7 +99,7 @@ if (state$nonlinear == "yes") {
   }
 }
 
-# dummy of state
+## dummy of state ----
 if (state$nonlinear == "yes") {
   if (state$interacted == "yes") {
     state$absval <- unname(quantile(data[, state$statepos], probs = state$cq / 100))
@@ -103,7 +107,7 @@ if (state$nonlinear == "yes") {
   }
 }
 
-# generate plot of actual data that goes into model
+## generate plot of actual data that goes into model ----
 frequency <- sum(floor(time) == 2000) # 4 if quarterly, 12 if monthly
 xt00 <- which(time == 2000)
 if (frequency == 4) {
@@ -162,3 +166,5 @@ if (state$nonlinear == "yes") {
 par(mfrow = c(1, 1), mar = c(4.6, 4.1, 2.1, 2.1))
 
 rm(vv, nona, xt00, xt, numrows, s)
+
+# END

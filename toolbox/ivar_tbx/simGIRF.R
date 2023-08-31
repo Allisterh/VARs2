@@ -1,4 +1,7 @@
-simGIRF <- function(IVAR, state, h, historyindex, impulse, fast = T, printprogress = T) {
+# ************************************************************************
+# Simulate GIRF ----
+# ************************************************************************
+simGIRF <- function(IVAR, state, h, historyindex, impulse, fast = TRUE, printprogress = TRUE) {
   # references Koop, Peseran & Potter (1996), Giovanni Pellegrino
   # OIRFhist(t,j,k,hist) : GIRFs associated to each starting history in the input vector "histories"
 
@@ -410,3 +413,5 @@ simGIRF <- function(IVAR, state, h, historyindex, impulse, fast = T, printprogre
     "nrep" = nrep
   ))
 }
+
+# END

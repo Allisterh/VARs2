@@ -1,3 +1,6 @@
+# ************************************************************************
+# Estimate VAR ----
+# ************************************************************************
 estimateVAR <- function(data, p, c_case, exdata = NULL) {
   # Prep
   t <- nrow(data)
@@ -68,3 +71,5 @@ estimateVAR <- function(data, p, c_case, exdata = NULL) {
     "S" = S
   ))
 }
+
+# END
