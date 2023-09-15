@@ -1,10 +1,8 @@
 # ************************************************************************
 # Run all files ----
 # ************************************************************************
-# Feel free to copy, adapt, and use this code for your own purposes at
-# your own risk.
-#
-# Matthias Spichiger, 2023 (matthias.spichiger@bluewin.ch)
+# Feel free to copy, adapt, and use this code for your own purposes.
+# Matthias Spichiger (matthias.spichiger@bluewin.ch)
 # ************************************************************************
 source("toolbox/supportfct/compileRfct.R")
 
